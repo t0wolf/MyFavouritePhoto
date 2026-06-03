@@ -245,6 +245,9 @@ const Upload = {
 
         Utils.showToast(response.message, 'success');
 
+        // 触发照片上传成功事件
+        window.dispatchEvent(new Event('photoUploaded'));
+
         // 延迟关闭弹窗
         setTimeout(() => {
           this.closeModal();

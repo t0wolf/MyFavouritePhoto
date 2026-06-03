@@ -8,6 +8,9 @@ const App = {
     // 初始化主题
     Theme.init();
 
+    // 初始化粒子效果
+    Particles.init();
+
     // 初始化导航
     this.initNavigation();
 
@@ -16,6 +19,12 @@ const App = {
 
     // 绑定全局事件
     this.bindGlobalEvents();
+
+    // 初始化 Hero 区域
+    this.initHero();
+
+    // 加载统计数据
+    this.loadStats();
 
     console.log('✅ 应用初始化完成');
   },
@@ -41,6 +50,12 @@ const App = {
   switchView(view) {
     const galleryContainer = document.getElementById('galleryContainer');
     const albumsContainer = document.getElementById('albumsContainer');
+    const heroSection = document.getElementById('heroSection');
+
+    // 隐藏 Hero
+    if (heroSection) {
+      heroSection.style.display = 'none';
+    }
 
     switch (view) {
       case 'gallery':
@@ -93,6 +108,93 @@ const App = {
     Album.init();
   },
 
+  // 初始化 Hero 区域
+  initHero() {
+    const heroSection = document.getElementById('heroSection');
+    const heroUploadBtn = document.getElementById('heroUploadBtn');
+    const heroDemoBtn = document.getElementById('heroDemoBtn');
+
+    if (heroUploadBtn) {
+      heroUploadBtn.addEventListener('click', () => {
+        Upload.openModal();
+      });
+    }
+
+    if (heroDemoBtn) {
+      heroDemoBtn.addEventListener('click', () => {
+        // 切换到全部照片视图
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.nav-btn[data-view="gallery"]').classList.add('active');
+        this.switchView('gallery');
+      });
+    }
+
+    // 初始显示 Hero（如果没有照片的话）
+    this.checkShowHero();
+  },
+
+  // 检查是否显示 Hero
+  async checkShowHero() {
+    const heroSection = document.getElementById('heroSection');
+    const galleryContainer = document.getElementById('galleryContainer');
+
+    try {
+      const response = await API.photos.getAll({ limit: 1 });
+      const hasPhotos = response.success && response.data.length > 0;
+
+      if (heroSection) {
+        heroSection.style.display = hasPhotos ? 'none' : 'flex';
+      }
+    } catch (error) {
+      console.error('检查照片失败:', error);
+    }
+  },
+
+  // 加载统计数据
+  async loadStats() {
+    try {
+      // 获取照片数量
+      const photosResponse = await API.photos.getAll({ limit: 1 });
+      const statPhotos = document.getElementById('statPhotos');
+      if (statPhotos && photosResponse.success) {
+        this.animateNumber(statPhotos, photosResponse.pagination.total);
+      }
+
+      // 获取相册数量
+      const albumsResponse = await API.albums.getAll();
+      const statAlbums = document.getElementById('statAlbums');
+      if (statAlbums && albumsResponse.success) {
+        this.animateNumber(statAlbums, albumsResponse.data.length);
+      }
+
+      // 获取收藏数量
+      const favoritesResponse = await API.photos.getAll({ is_favorite: true, limit: 1 });
+      const statFavorites = document.getElementById('statFavorites');
+      if (statFavorites && favoritesResponse.success) {
+        this.animateNumber(statFavorites, favoritesResponse.pagination.total);
+      }
+    } catch (error) {
+      console.error('加载统计数据失败:', error);
+    }
+  },
+
+  // 数字动画
+  animateNumber(element, target) {
+    const duration = 1000;
+    const start = 0;
+    const increment = target / (duration / 16);
+    let current = start;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      element.textContent = Math.floor(current);
+    }, 16);
+  },
+
   // 绑定全局事件
   bindGlobalEvents() {
     // 快捷键
@@ -112,6 +214,12 @@ const App = {
 
     // 移动端搜索按钮
     this.initMobileSearch();
+
+    // 监听照片上传成功事件
+    window.addEventListener('photoUploaded', () => {
+      this.checkShowHero();
+      this.loadStats();
+    });
   },
 
   // 初始化移动端搜索

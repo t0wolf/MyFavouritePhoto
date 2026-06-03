@@ -383,7 +383,10 @@
   .toolbar,
   .photo-card-actions,
   .lightbox-actions,
-  .modal {
+  .modal,
+  .animated-bg,
+  .particles-canvas,
+  .hero-section {
     display: none !important;
   }
 
@@ -401,5 +404,119 @@
     margin-bottom: 20px;
     box-shadow: none;
     border: 1px solid #ddd;
+  }
+}
+
+/* ========== Hero 区域响应式 ========== */
+
+/* 平板设备 */
+@media (max-width: 1024px) {
+  .hero-section {
+    flex-direction: column;
+    padding: 40px 30px;
+    min-height: auto;
+  }
+
+  .hero-content {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-stats {
+    justify-content: center;
+  }
+
+  .hero-visual {
+    display: none;
+  }
+}
+
+/* 移动设备 */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 30px 20px;
+    margin-bottom: 20px;
+    border-radius: var(--radius-lg);
+  }
+
+  .hero-badge {
+    font-size: 0.8rem;
+    padding: 6px 16px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: 24px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .hero-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-stats {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .stat-divider {
+    width: 40px;
+    height: 1px;
+  }
+
+  .stat-number {
+    font-size: 1.5rem;
+  }
+
+  /* 粒子效果在移动端减少 */
+  .particles-canvas {
+    opacity: 0.5;
+  }
+
+  /* 动态背景在移动端简化 */
+  .gradient-orb {
+    opacity: 0.08;
+  }
+}
+
+/* 小型移动设备 */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-description {
+    font-size: 0.9rem;
+  }
+
+  .hero-stats {
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .stat-number {
+    font-size: 1.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
   }
 }

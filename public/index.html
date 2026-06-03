@@ -9,48 +9,69 @@
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/responsive.css">
   <link rel="stylesheet" href="/css/animations.css">
+  <link rel="stylesheet" href="/css/fancy.css">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
 </head>
 <body>
+  <!-- 动态背景 -->
+  <div class="animated-bg">
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    <div class="gradient-orb orb-4"></div>
+  </div>
+
+  <!-- 粒子效果 -->
+  <canvas id="particles" class="particles-canvas"></canvas>
+
   <!-- 顶部导航栏 -->
-  <header class="navbar">
+  <header class="navbar fancy-navbar">
     <div class="navbar-container">
       <div class="navbar-brand">
-        <span class="logo-icon">📸</span>
-        <h1 class="logo-text">我的照片集</h1>
+        <div class="logo-wrapper">
+          <span class="logo-icon">📸</span>
+          <div class="logo-glow"></div>
+        </div>
+        <h1 class="logo-text fancy-logo">我的照片集</h1>
       </div>
 
       <nav class="navbar-menu">
-        <button class="nav-btn active" data-view="gallery">
+        <button class="nav-btn fancy-nav-btn active" data-view="gallery">
           <span class="nav-icon">🖼️</span>
           <span class="nav-text">全部照片</span>
+          <div class="nav-btn-glow"></div>
         </button>
-        <button class="nav-btn" data-view="albums">
+        <button class="nav-btn fancy-nav-btn" data-view="albums">
           <span class="nav-icon">📁</span>
           <span class="nav-text">相册</span>
+          <div class="nav-btn-glow"></div>
         </button>
-        <button class="nav-btn" data-view="favorites">
+        <button class="nav-btn fancy-nav-btn" data-view="favorites">
           <span class="nav-icon">❤️</span>
           <span class="nav-text">收藏</span>
+          <div class="nav-btn-glow"></div>
         </button>
       </nav>
 
       <div class="navbar-actions">
-        <div class="search-box">
+        <div class="search-box fancy-search">
           <input type="text" id="searchInput" placeholder="搜索照片...">
           <button id="searchBtn" class="search-btn">
             <span>🔍</span>
           </button>
+          <div class="search-glow"></div>
         </div>
 
-        <button id="uploadBtn" class="primary-btn">
+        <button id="uploadBtn" class="primary-btn fancy-btn">
           <span class="btn-icon">📤</span>
           <span class="btn-text">上传照片</span>
+          <div class="btn-particles"></div>
         </button>
 
-        <button id="themeToggle" class="theme-toggle" title="切换主题">
+        <button id="themeToggle" class="theme-toggle fancy-theme-toggle" title="切换主题">
           <span class="theme-icon-light">🌙</span>
           <span class="theme-icon-dark">☀️</span>
+          <div class="toggle-ring"></div>
         </button>
       </div>
     </div>
@@ -58,10 +79,60 @@
 
   <!-- 主要内容区域 -->
   <main class="main-content">
+    <!-- Hero 区域 (空状态时显示) -->
+    <div id="heroSection" class="hero-section">
+      <div class="hero-content">
+        <div class="hero-badge">✨ 你的专属照片空间</div>
+        <h2 class="hero-title">
+          <span class="gradient-text">记录美好</span>
+          <br>
+          <span class="gradient-text-alt">珍藏瞬间</span>
+        </h2>
+        <p class="hero-description">
+          在这里，每一张照片都是一段故事，每一个瞬间都值得被珍藏
+        </p>
+        <div class="hero-actions">
+          <button id="heroUploadBtn" class="primary-btn hero-btn">
+            <span class="btn-icon">🚀</span>
+            <span class="btn-text">开始上传</span>
+          </button>
+          <button id="heroDemoBtn" class="secondary-btn hero-btn">
+            <span class="btn-icon">✨</span>
+            <span class="btn-text">查看示例</span>
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number" id="statPhotos">0</span>
+            <span class="stat-label">张照片</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" id="statAlbums">0</span>
+            <span class="stat-label">个相册</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" id="statFavorites">0</span>
+            <span class="stat-label">个收藏</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="floating-cards">
+          <div class="float-card card-1">📷</div>
+          <div class="float-card card-2">🌅</div>
+          <div class="float-card card-3">🏔️</div>
+          <div class="float-card card-4">🌸</div>
+          <div class="float-card card-5">🎭</div>
+        </div>
+      </div>
+    </div>
+
     <!-- 工具栏 -->
-    <div class="toolbar">
+    <div class="toolbar fancy-toolbar">
       <div class="toolbar-left">
-        <div class="view-modes">
+        <div class="view-modes fancy-view-modes">
           <button class="view-btn active" data-mode="grid" title="网格视图">
             <span>⊞</span>
           </button>
@@ -70,7 +141,7 @@
           </button>
         </div>
 
-        <select id="sortSelect" class="sort-select">
+        <select id="sortSelect" class="sort-select fancy-select">
           <option value="created_at-DESC">最新上传</option>
           <option value="created_at-ASC">最早上传</option>
           <option value="title-ASC">按名称</option>
@@ -78,14 +149,14 @@
       </div>
 
       <div class="toolbar-right">
-        <span id="photoCount" class="photo-count">0 张照片</span>
+        <span id="photoCount" class="photo-count fancy-count">0 张照片</span>
       </div>
     </div>
 
     <!-- 照片网格/瀑布流容器 -->
     <div id="galleryContainer" class="gallery-container grid-view">
       <!-- 照片将通过 JavaScript 动态加载 -->
-      <div class="empty-state" id="emptyState">
+      <div class="empty-state" id="emptyState" style="display: none;">
         <div class="empty-icon">📷</div>
         <h3>还没有照片</h3>
         <p>点击上方的"上传照片"按钮开始添加你的照片吧！</p>
@@ -95,8 +166,8 @@
     <!-- 相册视图 -->
     <div id="albumsContainer" class="albums-container" style="display: none;">
       <div class="albums-header">
-        <h2>我的相册</h2>
-        <button id="createAlbumBtn" class="primary-btn">
+        <h2 class="gradient-text">我的相册</h2>
+        <button id="createAlbumBtn" class="primary-btn fancy-btn">
           <span class="btn-icon">➕</span>
           <span class="btn-text">创建相册</span>
         </button>
@@ -108,7 +179,7 @@
 
     <!-- 加载更多 -->
     <div id="loadMore" class="load-more" style="display: none;">
-      <button id="loadMoreBtn" class="load-more-btn">
+      <button id="loadMoreBtn" class="load-more-btn fancy-load-btn">
         <span class="spinner"></span>
         <span>加载更多</span>
       </button>
@@ -118,19 +189,22 @@
   <!-- 上传弹窗 -->
   <div id="uploadModal" class="modal">
     <div class="modal-overlay"></div>
-    <div class="modal-content upload-modal">
+    <div class="modal-content upload-modal fancy-modal">
       <div class="modal-header">
         <h2>上传照片</h2>
         <button class="modal-close">&times;</button>
       </div>
       <div class="modal-body">
-        <div id="dropZone" class="drop-zone">
-          <div class="drop-icon">📤</div>
-          <p class="drop-text">拖拽照片到这里上传</p>
-          <p class="drop-hint">或者</p>
-          <label for="fileInput" class="file-label">选择文件</label>
-          <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
-          <p class="drop-info">支持 JPG, PNG, GIF, WebP 格式，单个文件最大 50MB</p>
+        <div id="dropZone" class="drop-zone fancy-drop-zone">
+          <div class="drop-zone-inner">
+            <div class="drop-icon">📤</div>
+            <p class="drop-text">拖拽照片到这里上传</p>
+            <p class="drop-hint">或者</p>
+            <label for="fileInput" class="file-label fancy-file-label">选择文件</label>
+            <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+            <p class="drop-info">支持 JPG, PNG, GIF, WebP 格式，单个文件最大 50MB</p>
+          </div>
+          <div class="drop-zone-border"></div>
         </div>
 
         <div id="uploadPreview" class="upload-preview" style="display: none;">
@@ -144,8 +218,9 @@
         </div>
 
         <div id="uploadProgress" class="upload-progress" style="display: none;">
-          <div class="progress-bar">
+          <div class="progress-bar fancy-progress">
             <div id="progressFill" class="progress-fill"></div>
+            <div class="progress-glow"></div>
           </div>
           <p id="progressText" class="progress-text">上传中...</p>
         </div>
@@ -153,7 +228,7 @@
         <div class="upload-options">
           <label class="form-label">
             选择相册 (可选)
-            <select id="uploadAlbumSelect" class="form-select">
+            <select id="uploadAlbumSelect" class="form-select fancy-form-select">
               <option value="">不选择相册</option>
             </select>
           </label>
@@ -161,7 +236,7 @@
       </div>
       <div class="modal-footer">
         <button id="cancelUpload" class="secondary-btn">取消</button>
-        <button id="startUpload" class="primary-btn" disabled>开始上传</button>
+        <button id="startUpload" class="primary-btn fancy-btn" disabled>开始上传</button>
       </div>
     </div>
   </div>
@@ -169,7 +244,7 @@
   <!-- 相册创建/编辑弹窗 -->
   <div id="albumModal" class="modal">
     <div class="modal-overlay"></div>
-    <div class="modal-content album-modal">
+    <div class="modal-content album-modal fancy-modal">
       <div class="modal-header">
         <h2 id="albumModalTitle">创建相册</h2>
         <button class="modal-close">&times;</button>
@@ -177,16 +252,16 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="albumName" class="form-label">相册名称 *</label>
-          <input type="text" id="albumName" class="form-input" placeholder="输入相册名称" required>
+          <input type="text" id="albumName" class="form-input fancy-input" placeholder="输入相册名称" required>
         </div>
         <div class="form-group">
           <label for="albumDescription" class="form-label">相册描述</label>
-          <textarea id="albumDescription" class="form-textarea" placeholder="输入相册描述（可选）" rows="3"></textarea>
+          <textarea id="albumDescription" class="form-textarea fancy-textarea" placeholder="输入相册描述（可选）" rows="3"></textarea>
         </div>
       </div>
       <div class="modal-footer">
         <button id="cancelAlbum" class="secondary-btn">取消</button>
-        <button id="saveAlbum" class="primary-btn">保存</button>
+        <button id="saveAlbum" class="primary-btn fancy-btn">保存</button>
       </div>
     </div>
   </div>
@@ -225,7 +300,7 @@
   <!-- 照片编辑弹窗 -->
   <div id="editModal" class="modal">
     <div class="modal-overlay"></div>
-    <div class="modal-content edit-modal">
+    <div class="modal-content edit-modal fancy-modal">
       <div class="modal-header">
         <h2>编辑照片信息</h2>
         <button class="modal-close">&times;</button>
@@ -233,21 +308,21 @@
       <div class="modal-body">
         <div class="form-group">
           <label for="editTitle" class="form-label">标题</label>
-          <input type="text" id="editTitle" class="form-input" placeholder="输入照片标题">
+          <input type="text" id="editTitle" class="form-input fancy-input" placeholder="输入照片标题">
         </div>
         <div class="form-group">
           <label for="editDescription" class="form-label">描述</label>
-          <textarea id="editDescription" class="form-textarea" placeholder="输入照片描述" rows="3"></textarea>
+          <textarea id="editDescription" class="form-textarea fancy-textarea" placeholder="输入照片描述" rows="3"></textarea>
         </div>
         <div class="form-group">
           <label for="editTags" class="form-label">标签</label>
-          <input type="text" id="editTags" class="form-input" placeholder="输入标签，用逗号分隔">
+          <input type="text" id="editTags" class="form-input fancy-input" placeholder="输入标签，用逗号分隔">
           <small class="form-hint">多个标签用逗号分隔</small>
         </div>
       </div>
       <div class="modal-footer">
         <button id="cancelEdit" class="secondary-btn">取消</button>
-        <button id="saveEdit" class="primary-btn">保存</button>
+        <button id="saveEdit" class="primary-btn fancy-btn">保存</button>
       </div>
     </div>
   </div>
@@ -255,7 +330,7 @@
   <!-- 照片选择弹窗（用于添加到相册） -->
   <div id="photoSelectModal" class="modal">
     <div class="modal-overlay"></div>
-    <div class="modal-content photo-select-modal">
+    <div class="modal-content photo-select-modal fancy-modal">
       <div class="modal-header">
         <h2>选择照片添加到相册</h2>
         <button class="modal-close">&times;</button>
@@ -267,13 +342,13 @@
       </div>
       <div class="modal-footer">
         <button id="cancelPhotoSelect" class="secondary-btn">取消</button>
-        <button id="confirmPhotoSelect" class="primary-btn">添加选中的照片</button>
+        <button id="confirmPhotoSelect" class="primary-btn fancy-btn">添加选中的照片</button>
       </div>
     </div>
   </div>
 
   <!-- 提示消息 -->
-  <div id="toast" class="toast">
+  <div id="toast" class="toast fancy-toast">
     <span id="toastMessage"></span>
   </div>
 
@@ -285,6 +360,7 @@
   <script src="/js/lightbox.js"></script>
   <script src="/js/upload.js"></script>
   <script src="/js/album.js"></script>
+  <script src="/js/particles.js"></script>
   <script src="/js/app.js"></script>
 </body>
 </html>
