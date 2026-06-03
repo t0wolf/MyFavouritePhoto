@@ -1,0 +1,26 @@
+{
+  "name": "myfavouritephoto",
+  "version": "1.0.0",
+  "description": "个人照片收集网站 - 精美的照片管理和展示平台",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "demo": "node demo.js"
+  },
+  "keywords": ["photo", "gallery", "personal", "collection"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sql.js": "^1.9.0",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.33.2",
+    "cors": "^2.8.5",
+    "morgan": "^1.10.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

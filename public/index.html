@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的照片集 - 记录美好瞬间</title>
+  <link rel="stylesheet" href="/css/themes.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link rel="stylesheet" href="/css/animations.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📸</text></svg>">
+</head>
+<body>
+  <!-- 顶部导航栏 -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <span class="logo-icon">📸</span>
+        <h1 class="logo-text">我的照片集</h1>
+      </div>
+
+      <nav class="navbar-menu">
+        <button class="nav-btn active" data-view="gallery">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text">全部照片</span>
+        </button>
+        <button class="nav-btn" data-view="albums">
+          <span class="nav-icon">📁</span>
+          <span class="nav-text">相册</span>
+        </button>
+        <button class="nav-btn" data-view="favorites">
+          <span class="nav-icon">❤️</span>
+          <span class="nav-text">收藏</span>
+        </button>
+      </nav>
+
+      <div class="navbar-actions">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="搜索照片...">
+          <button id="searchBtn" class="search-btn">
+            <span>🔍</span>
+          </button>
+        </div>
+
+        <button id="uploadBtn" class="primary-btn">
+          <span class="btn-icon">📤</span>
+          <span class="btn-text">上传照片</span>
+        </button>
+
+        <button id="themeToggle" class="theme-toggle" title="切换主题">
+          <span class="theme-icon-light">🌙</span>
+          <span class="theme-icon-dark">☀️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主要内容区域 -->
+  <main class="main-content">
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="view-modes">
+          <button class="view-btn active" data-mode="grid" title="网格视图">
+            <span>⊞</span>
+          </button>
+          <button class="view-btn" data-mode="masonry" title="瀑布流视图">
+            <span>⊟</span>
+          </button>
+        </div>
+
+        <select id="sortSelect" class="sort-select">
+          <option value="created_at-DESC">最新上传</option>
+          <option value="created_at-ASC">最早上传</option>
+          <option value="title-ASC">按名称</option>
+        </select>
+      </div>
+
+      <div class="toolbar-right">
+        <span id="photoCount" class="photo-count">0 张照片</span>
+      </div>
+    </div>
+
+    <!-- 照片网格/瀑布流容器 -->
+    <div id="galleryContainer" class="gallery-container grid-view">
+      <!-- 照片将通过 JavaScript 动态加载 -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">📷</div>
+        <h3>还没有照片</h3>
+        <p>点击上方的"上传照片"按钮开始添加你的照片吧！</p>
+      </div>
+    </div>
+
+    <!-- 相册视图 -->
+    <div id="albumsContainer" class="albums-container" style="display: none;">
+      <div class="albums-header">
+        <h2>我的相册</h2>
+        <button id="createAlbumBtn" class="primary-btn">
+          <span class="btn-icon">➕</span>
+          <span class="btn-text">创建相册</span>
+        </button>
+      </div>
+      <div id="albumsGrid" class="albums-grid">
+        <!-- 相册将通过 JavaScript 动态加载 -->
+      </div>
+    </div>
+
+    <!-- 加载更多 -->
+    <div id="loadMore" class="load-more" style="display: none;">
+      <button id="loadMoreBtn" class="load-more-btn">
+        <span class="spinner"></span>
+        <span>加载更多</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- 上传弹窗 -->
+  <div id="uploadModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content upload-modal">
+      <div class="modal-header">
+        <h2>上传照片</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="dropZone" class="drop-zone">
+          <div class="drop-icon">📤</div>
+          <p class="drop-text">拖拽照片到这里上传</p>
+          <p class="drop-hint">或者</p>
+          <label for="fileInput" class="file-label">选择文件</label>
+          <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+          <p class="drop-info">支持 JPG, PNG, GIF, WebP 格式，单个文件最大 50MB</p>
+        </div>
+
+        <div id="uploadPreview" class="upload-preview" style="display: none;">
+          <div class="preview-header">
+            <span id="fileCount">0 个文件</span>
+            <button id="clearFiles" class="clear-btn">清空</button>
+          </div>
+          <div id="previewList" class="preview-list">
+            <!-- 预览将通过 JavaScript 动态添加 -->
+          </div>
+        </div>
+
+        <div id="uploadProgress" class="upload-progress" style="display: none;">
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="progressText" class="progress-text">上传中...</p>
+        </div>
+
+        <div class="upload-options">
+          <label class="form-label">
+            选择相册 (可选)
+            <select id="uploadAlbumSelect" class="form-select">
+              <option value="">不选择相册</option>
+            </select>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelUpload" class="secondary-btn">取消</button>
+        <button id="startUpload" class="primary-btn" disabled>开始上传</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 相册创建/编辑弹窗 -->
+  <div id="albumModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content album-modal">
+      <div class="modal-header">
+        <h2 id="albumModalTitle">创建相册</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="albumName" class="form-label">相册名称 *</label>
+          <input type="text" id="albumName" class="form-input" placeholder="输入相册名称" required>
+        </div>
+        <div class="form-group">
+          <label for="albumDescription" class="form-label">相册描述</label>
+          <textarea id="albumDescription" class="form-textarea" placeholder="输入相册描述（可选）" rows="3"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelAlbum" class="secondary-btn">取消</button>
+        <button id="saveAlbum" class="primary-btn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 灯箱查看器 -->
+  <div id="lightbox" class="lightbox">
+    <div class="lightbox-overlay"></div>
+    <div class="lightbox-container">
+      <button class="lightbox-close">&times;</button>
+      <button class="lightbox-prev" title="上一张 (←)">‹</button>
+      <button class="lightbox-next" title="下一张 (→)">›</button>
+
+      <div class="lightbox-content">
+        <img id="lightboxImage" src="" alt="">
+      </div>
+
+      <div class="lightbox-info">
+        <div class="lightbox-info-header">
+          <h3 id="lightboxTitle" class="lightbox-title"></h3>
+          <button id="lightboxFavorite" class="favorite-btn" title="收藏">♡</button>
+        </div>
+        <p id="lightboxDescription" class="lightbox-description"></p>
+        <div id="lightboxMeta" class="lightbox-meta">
+          <span id="lightboxSize"></span>
+          <span id="lightboxDimensions"></span>
+          <span id="lightboxDate"></span>
+        </div>
+        <div class="lightbox-actions">
+          <button id="lightboxEdit" class="action-btn" title="编辑信息">✏️</button>
+          <button id="lightboxDelete" class="action-btn danger" title="删除照片">🗑️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 照片编辑弹窗 -->
+  <div id="editModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content edit-modal">
+      <div class="modal-header">
+        <h2>编辑照片信息</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editTitle" class="form-label">标题</label>
+          <input type="text" id="editTitle" class="form-input" placeholder="输入照片标题">
+        </div>
+        <div class="form-group">
+          <label for="editDescription" class="form-label">描述</label>
+          <textarea id="editDescription" class="form-textarea" placeholder="输入照片描述" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="editTags" class="form-label">标签</label>
+          <input type="text" id="editTags" class="form-input" placeholder="输入标签，用逗号分隔">
+          <small class="form-hint">多个标签用逗号分隔</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelEdit" class="secondary-btn">取消</button>
+        <button id="saveEdit" class="primary-btn">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 照片选择弹窗（用于添加到相册） -->
+  <div id="photoSelectModal" class="modal">
+    <div class="modal-overlay"></div>
+    <div class="modal-content photo-select-modal">
+      <div class="modal-header">
+        <h2>选择照片添加到相册</h2>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="photoSelectGrid" class="photo-select-grid">
+          <!-- 照片将通过 JavaScript 动态加载 -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelPhotoSelect" class="secondary-btn">取消</button>
+        <button id="confirmPhotoSelect" class="primary-btn">添加选中的照片</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 提示消息 -->
+  <div id="toast" class="toast">
+    <span id="toastMessage"></span>
+  </div>
+
+  <!-- 脚本 -->
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/theme.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script src="/js/lightbox.js"></script>
+  <script src="/js/upload.js"></script>
+  <script src="/js/album.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
